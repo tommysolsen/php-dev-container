@@ -1,0 +1,27 @@
+server {
+  listen 80 default_server;
+  listen [::]:80 default_server;
+  
+  index index.php;
+
+  server_name netflex.dev;
+
+  if (!-d "/sites/site/public") {
+    return 404;
+  }
+
+  root "/sites/site/public";
+
+  location / {
+    try_files $uri $uri/ /index.php?$args;
+  }
+
+  location ~ \.php$ {
+    include snippets/fastcgi-php.conf;
+    fastcgi_pass unix:/var/run/php/php7.2-fpm.sock;
+  }
+
+  location ~ /\.ht {
+    deny all;
+  }
+}
